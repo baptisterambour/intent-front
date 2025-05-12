@@ -1,14 +1,16 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import IntentAddForm from "./IntentAddForm";
 import IntentEditForm from "./IntentEditForm";
 
 const DEFAULT_INTENTS_URL = "http://localhost:5000/intent"
 
-export default function TaskTable() {
+export default function IntentTable() {
     const [intents, setIntents] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
+    const [idEditedIntent, setIdEditedIntent] = useState('');
+    const [contentEditedIntent, setContentEditedIntent] = useState('');
 
     useEffect(() => {
         fetchIntents();
@@ -23,12 +25,10 @@ export default function TaskTable() {
         }
     }
 
-    const editIntent = async (intent_id) => {
-        try {
-            await axios.patch(DEFAULT_INTENTS_URL+"/"+intent_id);
-        } catch (error) {
-            console.error(error);
-        }
+    const editIntent = async (intent_id, intent_content) => {
+        setShowEditForm(true);
+        setIdEditedIntent(intent_id);
+        setContentEditedIntent(intent_content);
     }
 
     const deleteIntent = async (intent_id) => {
@@ -79,10 +79,13 @@ export default function TaskTable() {
                 className="bg-green-500 text-white font-bold rounded px-2 py-2 my-4"
                 onClick={() => setShowAddForm(!showAddForm)}
             >
-                {showAddForm ? '➖ Cancel' : '➕ Add an intent'}
+                {showAddForm ? '➖ Cancel add' : '➕ Add an intent'}
             </button>
             {showAddForm && <IntentAddForm onIntentAdded={() => { setShowAddForm(!showAddForm); fetchIntents(); }} />}
-            {showEditForm && <IntentEditForm onIntentEdited={() => { setShowEditForm(!showEditForm); fetchIntents(); }} />}
+            {showEditForm && <IntentEditForm onIntentEdited={() => { setShowEditForm(!showEditForm); fetchIntents(); }}
+            idEditedIntent={idEditedIntent}
+            contentEditedIntent={contentEditedIntent}
+            setShowEditForm={setShowEditForm} />}
         </div>
     )
 }

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const DEFAULT_INTENTS_URL = "http://localhost:5000/intent"
 
-const IntentAddForm = ({ onIntentAdded, closeModal }) => {
+const IntentAddForm = ({ onIntentAdded }) => {
     const [author, setAuthor] = useState('');
     const [content, setContent] = useState('');
 
@@ -18,7 +18,6 @@ const IntentAddForm = ({ onIntentAdded, closeModal }) => {
         try {
             await axios.post(DEFAULT_INTENTS_URL, intentData);
             onIntentAdded();
-            closeModal();
         } catch (error) {
             console.error("Error adding intent:", error);
         }
