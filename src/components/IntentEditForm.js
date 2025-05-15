@@ -26,14 +26,13 @@ const IntentEditForm = ({ onIntentEdited, idEditedIntent, contentEditedIntent, s
     };
 
     return (
-        <div className="p-4 bg-white border rounded shadow-lg">
+        <div>
             <button onClick={() => setShowEditForm(false)}>➖ Cancel edit</button>
-            <h2 className="text-lg font-bold mb-2">Edit an intent</h2>
+            <h2>Edit intent</h2>
             <h3>ID : {idEditedIntent}</h3>
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto bg-white p-6 rounded shadow-md">
-                <input type="text" id="content" value={content} onChange={(e) => setContent(e.target.value)} placeholder="Content"
-                className="border p-2 w-full mb-2" required />
-                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
+            <form onSubmit={handleSubmit}>
+                <input type="text" id="content" value={content} onChange={(e) => setContent(e.target.value)} placeholder="Content" required />
+                <button type="submit">
                     Edit
                 </button>
             </form>
