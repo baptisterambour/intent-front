@@ -5,18 +5,32 @@ import IntentEditForm from "./IntentEditForm";
 
 const DEFAULT_INTENTS_URL = "http://localhost:5000/intent"
 
+/**
+ * IntentTable Component
+ *
+ * Main component responsible for displaying, adding, editing, deleting,
+ * and inspecting intent-related data (Intent Reports and JSON-LD).
+ *
+ * @component
+ */
 export default function IntentTable() {
+    // List of all intents
     const [intents, setIntents] = useState([]);
+
+    // Controls for showing/hiding the add form
     const [showAddForm, setShowAddForm] = useState(false);
     
+    // Controls for editing intents
     const [showEditForm, setShowEditForm] = useState(false);
     const [idEditedIntent, setIdEditedIntent] = useState('');
     const [contentEditedIntent, setContentEditedIntent] = useState('');
 
+    // Controls for viewing intent reports
     const [idIntentIntentReport, setIdIntentIntentReport] = useState('');
     const [showIntentReport, setShowIntentReport] = useState(false);
     const [intentReport, setIntentReport] = useState([]);
     
+    // Controls for viewing JSON-LD
     const [idIntentJsonLD, setIdIntentJsonLD] = useState('');
     const [showIntentJsonLD, setShowIntentJsonLD] = useState(false);
     const [jsonLDIntent, setJsonLDIntent] = useState('');
@@ -24,7 +38,10 @@ export default function IntentTable() {
     useEffect(() => {
         fetchIntents();
     }, []);
-
+    
+    /**
+     * Function used to fetch intents from the backend API.
+     */
     const fetchIntents = async () => {
         try {
             const response = await axios.get(DEFAULT_INTENTS_URL);
@@ -34,6 +51,11 @@ export default function IntentTable() {
         }
     }
 
+    /**
+     * Function used to fetch intent reports for a given intent ID.
+     * 
+     * @param {string} intent_id - The ID of the intent.
+     */
     const fetchIntentReport = async (intent_id) => {
         try {
             fetchIntents();
@@ -44,6 +66,11 @@ export default function IntentTable() {
         }
     }
 
+    /**
+     * Function used to fetch JSON-LD data for a given intent ID.
+     * 
+     * @param {string} intent_id - The ID of the intent.
+     */
     const fetchIntentJsonLD = async (intent_id) => {
         try {
             fetchIntents();
@@ -54,12 +81,23 @@ export default function IntentTable() {
         }
     }
 
+    /**
+     * Function used to open the edit form with intent ID and content pre-filled.
+     * 
+     * @param {string} intent_id - The ID of the edited intent.
+     * @param {string} intent_content - The content of the edited intent.
+     */
     const editIntent = async (intent_id, intent_content) => {
         setShowEditForm(true);
         setIdEditedIntent(intent_id);
         setContentEditedIntent(intent_content);
     }
 
+    /**
+     * Function used to delete an intent from the database and update the different elements.
+     * 
+     * @param {string} intent_id - The ID of the intent.
+     */
     const deleteIntent = async (intent_id) => {
         try {
             await axios.delete(DEFAULT_INTENTS_URL+"/"+intent_id);
@@ -79,6 +117,11 @@ export default function IntentTable() {
         }
     }
 
+    /**
+     * Function used to toggle the visibility of the intent report section of an intent.
+     * 
+     * @param {string} intent_id - The ID of the intent.
+     */
     const lookAtReport = async (intent_id) => {
         if(intent_id === idIntentIntentReport) {
             setIdIntentIntentReport('');
@@ -90,7 +133,12 @@ export default function IntentTable() {
             fetchIntentReport(intent_id);
         }
     }
-
+    
+    /**
+     * Function used to toggle the visibility of the JSON-LD section of an intent.
+     * 
+     * @param {string} intent_id - The ID of the intent.
+     */
     const lookAtJsonLD = async (intent_id) => {
         if(intent_id === idIntentJsonLD) {
             setIdIntentJsonLD('');
@@ -105,10 +153,15 @@ export default function IntentTable() {
 
     return (
         <div>
+            {/* Toggle add form button */}
             <button onClick={() => setShowAddForm(!showAddForm)}>
                 {showAddForm ? '➖ Cancel add' : '➕ Add an intent'}
             </button>
+
+            {/* Add form component */}
             {showAddForm && <IntentAddForm onIntentAdded={() => { setShowAddForm(!showAddForm); fetchIntents(); }} />}
+
+            {/* Edit form component */}
             {showEditForm && <IntentEditForm onIntentEdited={() => {
                 setShowEditForm(!showEditForm);
                 fetchIntents();
@@ -122,9 +175,12 @@ export default function IntentTable() {
             idEditedIntent={idEditedIntent}
             contentEditedIntent={contentEditedIntent}
             setShowEditForm={setShowEditForm} />}
+
             <h2>Intent List</h2>
+
             {intents.length > 0 ? (
                 <div>
+                    {/* Display list of intents */}
                     <table>
                         <thead>
                             <tr>
@@ -145,7 +201,7 @@ export default function IntentTable() {
                                     <td>{intent.id}</td>
                                     <td>{intent.author}</td>
                                     <td>{intent.content}</td>
-                                    <td>{new Date(intent.date).toLocaleString("en-NO", {dateStyle: "long", timeStyle: "medium", timeZone: "Europe/Oslo"})}</td>
+                                    <td>{new Date(intent.creationDate).toLocaleString("en-NO", {dateStyle: "long", timeStyle: "medium", timeZone: "Europe/Oslo"})}</td>
                                     <td>{new Date(intent.lastUpdateDate).toLocaleString("en-NO", {dateStyle: "long", timeStyle: "medium", timeZone: "Europe/Oslo"})}</td>
                                     <td><button onClick={() => editIntent(intent.id, intent.content)}>✏️</button></td>
                                     <td><button onClick={() => deleteIntent(intent.id) }>🗑️</button></td>
@@ -155,6 +211,8 @@ export default function IntentTable() {
                             ))}
                         </tbody>
                     </table>
+
+                    {/* Diplay intent reports */}
                     {showIntentReport && intentReport.length > 0 && (
                         <div>
                             <h3>Intent Report for ID : {idIntentIntentReport}</h3>
@@ -173,8 +231,8 @@ export default function IntentTable() {
                                         <tr key={i}>
                                             <td>{report.id}</td>
                                             <td>{report.agentName}</td>
-                                            <td>{report.response}</td>
-                                            <td>{new Date(report.date).toLocaleString("en-NO", {dateStyle: "long", timeStyle: "medium", timeZone: "Europe/Oslo"})}</td>
+                                            <td id="response">{report.response}</td>
+                                            <td>{new Date(report.creationDate).toLocaleString("en-NO", {dateStyle: "long", timeStyle: "medium", timeZone: "Europe/Oslo"})}</td>
                                             <td>{(report.executionTime * 1).toFixed(3)} s</td>
                                         </tr>
                                     ))}
@@ -182,6 +240,8 @@ export default function IntentTable() {
                             </table>
                         </div>
                     )}
+
+                    {/* Display JSON-LD */}
                     {showIntentJsonLD && (
                         <div>
                             <h3>JSON-LD for ID : {idIntentJsonLD}</h3>

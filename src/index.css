@@ -13,8 +13,8 @@ code {
 }
 
 table {
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 50px;
+  margin-right: 50px;
   border-collapse: collapse;
 
 }
@@ -24,5 +24,11 @@ th, td {
 }
 
 #jsonld {
+  margin-left: 50px;
+  text-align: left;
+}
+
+#response {
+  white-space: pre-wrap;
   text-align: left;
 }
