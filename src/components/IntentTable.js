@@ -216,28 +216,30 @@ export default function IntentTable() {
                     {showIntentReport && intentReport.length > 0 && (
                         <div>
                             <h3>Intent Report for ID : {idIntentIntentReport}</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Agent Name</th>
-                                        <th>Response</th>
-                                        <th>Date</th>
-                                        <th>Execution Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {intentReport.map((report, i) => (
-                                        <tr key={i}>
-                                            <td>{report.id}</td>
-                                            <td>{report.agentName}</td>
-                                            <td id="response">{report.response}</td>
-                                            <td>{new Date(report.creationDate).toLocaleString("en-NO", {dateStyle: "long", timeStyle: "medium", timeZone: "Europe/Oslo"})}</td>
-                                            <td>{(report.executionTime * 1).toFixed(3)} s</td>
+                            <div id="reports">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Agent Name</th>
+                                            <th>Response</th>
+                                            <th>Date</th>
+                                            <th>Execution Time</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {intentReport.map((report, i) => (
+                                            <tr key={i}>
+                                                <td>{report.id}</td>
+                                                <td>{report.agentName}</td>
+                                                <td id="response">{report.response}</td>
+                                                <td>{new Date(report.creationDate).toLocaleString("en-NO", {dateStyle: "long", timeStyle: "medium", timeZone: "Europe/Oslo"})}</td>
+                                                <td>{(report.executionTime * 1).toFixed(3)} s</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )}
 
